@@ -1,0 +1,78 @@
+#! /bin/bash
+
+if [ $# -lt 1 ];then
+   echo no mission
+   exit
+fi
+if [ "$1" == '--help' ]||[ "$1" == '-h' ]
+then
+    echo -e 'grun: bash script to run C++ code(s)\n'
+    echo 'grun usage:'
+    echo -e 'grun [-a arg] [-t] [file] [file2] [file3] [...]\n'
+    echo -e '--help\t: print usage'
+    echo -e '-h\t: print usage'
+    echo -e '-a\t: execute argument by g++'
+    echo -e '-t\t: write text and execute'
+    exit
+fi
+tmp='temp.o'
+if [ "$1" == '-a' ]
+then
+    if [ $# -ne 2 ];then
+	echo wrong arguments number
+    fi
+    tmp2='temp.C'
+    cat>$tmp2<<EOF
+#include<iostream>
+using namespace std;
+int main(){
+EOF
+    echo -e $2 ';' >>$tmp2
+    echo '}' >>$tmp2
+    g++ -std=c++11 $tmp2 -o $tmp
+    if [ -f ./$tmp ]
+	then
+	./$tmp
+	rm -f $tmp
+    fi
+    rm -f $tmp2
+    exit
+fi
+if [ "$1" == '-t' ]
+then
+    tmp2='temp.C'
+    echo -e 'input cpp script here (Ctrl-D to submit):\n'
+    cat>$tmp2<<EOF
+#include<iostream>
+using namespace std;
+int main(){
+EOF
+    cat>>$tmp2
+    echo } >>$tmp2
+    echo -e '\ncompiling...'
+    g++ -std=c++11 $tmp2 -o $tmp
+    if [ -f ./$tmp ]
+	then
+	echo 'output:'
+    	./$tmp
+	rm -f $tmp
+    fi
+    rm -f  $tmp2
+    exit
+fi
+declare -i ord=1
+while [ $ord -le $# ]
+do
+    eval file=\$$ord
+    if [ -f $file ];then
+	echo -e "\nrunning $file:"
+	g++ -std=c++11 $file -o $tmp
+	if [ -f ./$tmp ];then
+	    ./$tmp
+	    rm -f $tmp
+	fi
+    else
+	echo -e "\nfile: $file does not exist"
+    fi
+    ord=$(($ord+1))
+done

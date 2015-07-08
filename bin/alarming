@@ -1,0 +1,34 @@
+#! /bin/bash
+
+runalarm(){
+if [ $# -lt 2 ];then
+   echo incorrect imput
+   echo alarming time command
+   exit
+fi
+time1=`date -d $1 +%s`
+time2=`date +%s`
+if [ $time1 -lt $time2 ];then
+   echo past time
+   exit
+fi
+declare -i interval=$(($time1-$time2))
+sleep $interval
+declare -i ord=2
+while [ $ord -le $# ]
+do
+    eval \$$ord
+    ord=$(($ord+1))
+done
+}
+
+if [ "$1" == '--help' ]||[ "$1" == '-h' ];then
+    echo -e 'alarming: bash script to run command(s) at a specified time\n'
+    echo 'alarming usage:'
+    echo -e 'alarming time command1 [command2] [...]\n'
+    echo options:
+    echo -e '--help\t: print usage'
+    echo -e '-h\t: print usage'
+    exit
+fi
+runalarm $* &

@@ -1,0 +1,19 @@
+#! /bin/bash
+if [ "$1" = '--help' ]||[ "$1" = '-h' ];then
+    echo -e cmslpc:connect to yw5mj@cmslpc-sl6.fnal.gov\n
+    echo -e "\ncmslpc options:\n"
+    echo -e "-h:\t print help\n"
+    echo -e "--help:\t print help\n"
+    echo -e "-k:\t reenter kerberos passwd by force\n"
+    exit
+fi
+
+kl=`klist 2>/dev/null|grep FNAL.GOV@FNAL.GOV|awk '{print $3,$4}'`
+declare -i tm1=`date -d "$kl" +%s`
+declare -i tm2=`date +%s`
+if [ "$1" = '-k' ]||[ "$tm1" -lt "$tm2" ]
+then
+    kinit yw5mj@FNAL.GOV
+fi
+
+ssh yw5mj@cmslpc-sl6.fnal.gov
