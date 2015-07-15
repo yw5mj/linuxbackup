@@ -1,7 +1,5 @@
 #! /bin/bash
 rundog(){
-bark0=''
-bark=''
 while :
 do
 bark=`w|grep -v "$USER "|grep -iv user|awk '{print $1}'`
