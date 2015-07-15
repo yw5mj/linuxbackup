@@ -1,0 +1,12 @@
+#!/bin/sh
+if [ -z "$1" ]
+then
+echo 'no release information'
+exit
+fi
+release=CMSSW_$1
+export SCRAM_ARCH=slc6_amd64_gcc491
+alias cmsenv='eval `scramv1 runtime -sh`'
+alias cmsrel='scramv1 project CMSSW'
+scram project $release
+
