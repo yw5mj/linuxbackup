@@ -4,7 +4,7 @@ bark0=''
 bark=''
 while :
 do
-bark=`w|grep -v $USER|grep -iv user|awk '{print $1}'`
+bark=`w|grep -v "$USER "|grep -iv user|awk '{print $1}'`
 sleep 1
 if  [ "$bark" != "$bark0" ]
 then
