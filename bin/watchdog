@@ -1,0 +1,45 @@
+#! /bin/bash
+rundog(){
+bark0=''
+bark=''
+while :
+do
+bark=`w|grep -v yanchu|grep -iv user|awk '{print $1}'`
+sleep 1
+if  [ "$bark" != "$bark0" ]
+then
+    if [ -n "$bark" ]
+    then
+	echo -e '\n\a'Yap!!! Yap!!! Yap!!! watch out for $bark!!!
+	echo -e '\a'Yap!!! Yap!!! Yap!!! watch out for $bark!!!
+	echo -e '\a'Yap!!! Yap!!! Yap!!! watch out for $bark!!!
+    else
+	echo -e '\n\a'You are alone now
+    fi
+bark0=$bark
+fi
+done
+}
+
+
+
+if [ "$1" == '--help' ]||[ "$1" == '-h' ];then
+    echo 'watchdog usage:'
+    echo -e 'watchdog [option]\n'
+    echo options:
+    echo -e '--help\t: print usage'
+    echo -e '-h\t: print usage'
+    echo -e '-k\t: end watchdog'
+    exit
+fi
+if [ "$1" == '-k' ];then
+    wpid=`ps u|grep $USER/bin/watchdog|grep -v grep|grep -v '\-k'|awk '{print $2}'`
+    if [ -z "$wpid" ];then
+	echo 'No alive watchdog'
+	exit
+    fi
+    kill $wpid
+    echo 'You just killed the watchdog'
+    exit
+fi
+rundog &
