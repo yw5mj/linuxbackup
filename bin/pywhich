@@ -1,0 +1,17 @@
+#! /bin/bash
+
+if [ $# -lt 1 ];then
+   echo incorrect input
+   echo pywhich import [from]
+   exit
+fi
+
+file='/tmp/pywhich.py'
+if [ $# -eq 1 ]
+   then
+    echo import $1 >$file
+   else
+    echo from $2 import $1 >$file
+fi
+echo print $1.__file__ >>$file
+python $file
