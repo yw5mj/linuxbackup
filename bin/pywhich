@@ -6,6 +6,16 @@ if [ $# -lt 1 ];then
    exit
 fi
 
+if [ "$1" == '--help' ]||[ "$1" == '-h' ];then
+    echo -e 'pywhich: bash script to find a python module\n'
+    echo 'pywhich usage:'
+    echo -e 'pywhich import [from]\n'
+    echo options:
+    echo -e '--help\t: print usage'
+    echo -e '-h\t: print usage'
+    exit
+fi
+
 file='/tmp/pywhich.py'
 if [ $# -eq 1 ]
    then
@@ -14,4 +24,4 @@ if [ $# -eq 1 ]
     echo from $2 import $1 >$file
 fi
 echo print $1.__file__ >>$file
-python $file
+echo $1: `python $file 2>/dev/null`
