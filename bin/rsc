@@ -11,9 +11,9 @@ xrandr --output $devi --rotate $1
 }
 
 if [ "$1" == '--help' ]||[ "$1" == '-h' ]||[ -z "$1" ];then
-    echo -e 'rotscreen: bash script to rotate screen\n'
-    echo 'rotscreen usage:'
-    echo -e 'rotscreen [option]\n'
+    echo -e 'rsc: bash script to rotate screen\n'
+    echo 'rsc usage:'
+    echo -e 'rsc [option]\n'
     echo options:
     echo -e '--help\t: print usage'
     echo -e '-h\t: print usage'
