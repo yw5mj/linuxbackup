@@ -17,18 +17,18 @@ if [ "$1" == '--help' ]||[ "$1" == '-h' ]||[ -z "$1" ];then
     echo options:
     echo -e '--help\t: print usage'
     echo -e '-h\t: print usage'
-    echo -e '-n\t: rotate normal'
-    echo -e '-r\t: print right'
-    echo -e '-l\t: print left'
+    echo -e 'n\t: rotate normal'
+    echo -e 'r\t: print right'
+    echo -e 'l\t: print left'
     exit
 fi
-if [ "$1" == '-n' ]
+if [ "$1" == 'n' ]
 then
     whatway=normal
-elif [ "$1" == '-l' ]
+elif [ "$1" == 'l' ]
 then
     whatway=left
-elif [ "$1" == '-r' ]
+elif [ "$1" == 'r' ]
 then
     whatway=right
 fi
