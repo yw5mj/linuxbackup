@@ -1,0 +1,35 @@
+#! /bin/bash
+runrotsc(){
+devi=`xrandr -q|grep ' connected '|awk '{print $1}'`
+if [ -z "$devi" ]
+then
+	echo ERROR: no display device detected
+	exit
+fi
+echo Device: $devi
+xrandr --output $devi --rotate $1
+}
+
+if [ "$1" == '--help' ]||[ "$1" == '-h' ]||[ -z "$1" ];then
+    echo -e 'rsc: bash script to rotate screen\n'
+    echo 'rsc usage:'
+    echo -e 'rsc [option]\n'
+    echo options:
+    echo -e '--help\t: print usage'
+    echo -e '-h\t: print usage'
+    echo -e 'n\t: rotate normal'
+    echo -e 'r\t: print right'
+    echo -e 'l\t: print left'
+    exit
+fi
+if [ "$1" == 'n' ]
+then
+    whatway=normal
+elif [ "$1" == 'l' ]
+then
+    whatway=left
+elif [ "$1" == 'r' ]
+then
+    whatway=right
+fi
+runrotsc $whatway
