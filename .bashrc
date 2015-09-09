@@ -26,7 +26,7 @@ if [ -z "$a" ];then
 fi
 
 # User specified aliases and functions
-export PS1="\e[1;32mYanchu's_Command_Line: \e[m"
+export PS1="\e[1;32mYanchu's_Command_Line$ \e[m"
 alias q=exit
 alias e="/usr/bin/emacs -fs"
 alias emacs="emacs -nw"
