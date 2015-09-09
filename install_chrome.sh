@@ -47,7 +47,7 @@ Syntax: ./install_chrome.sh [-b] [-d] [-f [-f [-f]]] [-h] [-n] [-q] [-s]
 }
 
 # Current version of this script
-version="7.20"
+version="7.21"
 
 # This script will download/install the following for an installation:
 
@@ -78,6 +78,11 @@ version="7.20"
 # Note that you can't run Google Chrome as root - it stops you from doing so.
 
 # Revision history:
+
+# 7.21 - 23rd July 2015
+# - gcc 5.2.0 was recently released, so the downloadable 64-bit libstdc++.so.6
+#   was rebuilt using it. A new checksum/size for the library meant a new
+#   script release.
 
 # 7.20 - 7th June 2015
 # - Warn about out-of-date kernels that will cause Google Chrome to crash
@@ -1726,7 +1731,7 @@ check_if_kernel_obsolete()
 install_prebuilt_library()
 # Download pre-built 64-bit libstdc++ library from script site
 {
-   download_file "$checksite$download_lib_xz" "$download_lib_xz" "3730939842 337884 $download_lib_xz" 1
+   download_file "$checksite$download_lib_xz" "$download_lib_xz" "1931849862 338872 $download_lib_xz" 1
 
    destlib="$libdir/$download_lib"
    xzcat -f "$download_lib_xz" >$destlib

@@ -1,0 +1,6 @@
+#! /bin/bash
+stty -echo
+if [ "$1" == 'n' ]
+then
+    stty echo
+fi

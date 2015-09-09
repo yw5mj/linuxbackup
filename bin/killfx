@@ -1,0 +1,37 @@
+#! /bin/bash
+if [ -z "$1" ]
+then 
+    echo 'ERROR: no message'
+    exit
+fi
+if [ "$1" == '--help' ]||[ "$1" == '-h' ];then
+    echo -e 'killfx: a script to kill fx\n'
+    echo 'killfx usage:'
+    echo -e 'killfx [message]\n'
+    echo options:
+    echo -e '--help\t: print usage'
+    echo -e '-h\t: print usage'
+    echo -e '-k\t: let her live'
+    exit
+fi
+
+if [ "$1" == '-k' ]
+then
+    ssh fanxia killall killfx
+    echo "I'll kill her next time"
+    exit
+fi
+if [ "$HOSTNAME" == 'fanxia.cern.ch' ]
+then
+    while :
+    do
+#	wall $*
+	sleep 1
+    done
+else
+    echo "I'm killing her"
+    ssh fanxia ~/bin/killfx $*
+fi
+
+
+
