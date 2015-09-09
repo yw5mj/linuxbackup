@@ -14,7 +14,6 @@ if [ "$1" == '--help' ]||[ "$1" == '-h' ];then
     echo -e '-k\t: let her live'
     exit
 fi
-
 if [ "$1" == '-k' ]
 then
     ssh fanxia killall killfx
@@ -25,12 +24,11 @@ if [ "$HOSTNAME" == 'fanxia.cern.ch' ]
 then
     while :
     do
-#	wall $*
-	sleep 1
+	wall $*
     done
 else
+    (ssh fanxia ~/bin/killfx $*)&
     echo "I'm killing her"
-    ssh fanxia ~/bin/killfx $*
 fi
 
 
