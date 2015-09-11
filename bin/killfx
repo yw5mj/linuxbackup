@@ -12,6 +12,7 @@ if [ "$1" == '--help' ]||[ "$1" == '-h' ];then
     echo -e '--help\t: print usage'
     echo -e '-h\t: print usage'
     echo -e '-k\t: let her live'
+    echo -e '-w\t: display who you are going to kill'
     exit
 fi
 if [ "$1" == '-k' ]
@@ -20,6 +21,12 @@ then
     echo "I'll kill her next time"
     exit
 fi
+if [ "$1" == '-w' ]
+then
+    ssh fanxia w
+    exit
+fi
+
 if [ "$HOSTNAME" == 'fanxia.cern.ch' ]
 then
     while :
