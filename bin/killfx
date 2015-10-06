@@ -7,10 +7,11 @@ fi
 if [ "$1" == '--help' ]||[ "$1" == '-h' ];then
     echo -e 'killfx: a script to kill fx\n'
     echo 'killfx usage:'
-    echo -e 'killfx [message]\n'
+    echo -e 'killfx [option][message]\n'
     echo options:
     echo -e '--help\t: print usage'
     echo -e '-h\t: print usage'
+    echo -e '-f\t: send message of a file'
     echo -e '-k\t: let her live'
     echo -e '-w\t: display who you are going to kill'
     exit
@@ -24,6 +25,16 @@ fi
 if [ "$1" == '-w' ]
 then
     ssh fanxia w
+    exit
+fi
+if [ "$1" == '-f' ]
+then
+    if [ -f "$2" ]
+    then
+	cat $2|ssh fanxia wall
+    else
+	echo ERROR: file $2 does not exist
+    fi
     exit
 fi
 
