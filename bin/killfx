@@ -31,7 +31,7 @@ if [ "$1" == '-f' ]
 then
     if [ -f "$2" ]
     then
-	cat $2|ssh fanxia wall
+	cat $2|ssh fanxia write fxia
     else
 	echo ERROR: file $2 does not exist
     fi
