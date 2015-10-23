@@ -1,0 +1,21 @@
+#! /bin/env python
+import smtplib		# For emailing.
+from email.mime.text import MIMEText		# For emailing.
+
+def sendml(fr,rc,sb,bd):
+    msg = MIMEText(bd)
+    msg['Subject'] = sb
+    msg['From'] = fr if fr else "yanchu@cern.ch"
+    msg['To'] = 'Me'
+    s = smtplib.SMTP_SSL('slmp-550-22.slc.westdc.net',465)
+    s.login("alerts@connivance.net", "Megash4rk")
+    s.sendmail("alerts@connivance.net",rc,msg.as_string())
+    s.quit()
+
+if __name__=="__main__":
+    fr=raw_input("from(default yanchu@cern.ch): ")
+    rc=[i for i in raw_input("to(separated by ';'): ").split(';') if i]
+    sb=raw_input("subject: ")
+    bd=raw_input("email body: ")
+    sendml(fr,rc,sb,bd)
+
