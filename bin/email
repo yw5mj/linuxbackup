@@ -1,0 +1,30 @@
+#! /bin/env python
+import smtplib
+from getpass import getpass
+z=True
+while z:
+    try:
+        fr=raw_input("from(default testhellotestworldtest@gmail.com): ")
+        gmail_user = (fr if fr else "testhellotestworldtest@gmail.com").strip()
+        smtpstr = "smtp.gmail.com" if 'gmail' in gmail_user else raw_input("\nnot using a gmail account?\nSMTP_SERVER(default smtp.gmail.com): ")
+        smtpstr = smtpstr if smtpstr else "smtp.gmail.com"
+        smtpserver = smtplib.SMTP(smtpstr)
+        smtpserver.ehlo()
+        smtpserver.starttls()
+        gmail_pwd = getpass() if fr else "testtesttesthello"
+        smtpserver.login(gmail_user, gmail_pwd)
+    except:
+        print "\nERROR: Log in failed..."
+        t=raw_input("Try another account?(y/n): ")
+        if t!='y':
+            exit()
+    else:
+        z=False
+to = [i for i in raw_input("to(separated by ';',default yanchu@cern.ch): ").split(';') if i]
+sb=raw_input("subject: ")
+bd=raw_input("email body: ")
+to = to if to else "yanchu@cern.ch"
+msg =  'To:Me\nFrom: ' + gmail_user + '\n' + 'Subject:'+sb+' \n\n'+ bd+'  \n\n'
+smtpserver.sendmail(gmail_user, to, msg)
+smtpserver.close()
+print '\nEmail sent successfully!'
