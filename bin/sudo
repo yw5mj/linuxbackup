@@ -23,7 +23,7 @@ def dosudo(cmmd):
                 sf='failed'
                 p.expect(EOF)
                 print 'sudo: 3 incorrect password attempts'
-        rslt=p.before.split(psstr)[-1].strip()
+        rslt=p.before.strip()
     except Exception as ex:
         sf='failed'
         rslt='Permission denied'
@@ -43,6 +43,6 @@ if __name__=="__main__":
     try:
         dsd=dosudo(comm)
         if dsd[0]: sendemail(dsd[0])
-        if dsd[1] and not "failed" in dsd[1]: print dsd[1]
+        if dsd[1]: print dsd[1]
     except:
         pass
