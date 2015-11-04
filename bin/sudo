@@ -9,25 +9,29 @@ def dosudo(cmmd):
     usnm=os.environ.get('USER')
     hsnm=os.environ.get('HOSTNAME')
     psstr='[sudo] password for {0}: '.format(usnm)
-    sf='succeeded'
+    sf='sudo succeeded'
     psw=''
     try:
         p=spawn('bash',['-c','/usr/bin/sudo '+cmmd])
         i=0
         while i==0:
-            i=p.expect([usnm+': ','3 incorrect password attempts',EOF])
+            i=p.expect([usnm+': ','3 incorrect password attempts','will be reported.',EOF])
             if i==0:
                 psw=getpass(psstr)
                 p.sendline(psw)
             if i==1:
-                sf='failed'
+                sf='sudo failed'
                 p.expect(EOF)
                 print 'sudo: 3 incorrect password attempts'
+            if i==2:
+                sf='Not Sudoer'
+                p.expect(EOF)
+                print '{0} is not in the sudoers file.  This incident will be reported.'.format(usnm)
         rslt=p.before.strip()
     except Exception as ex:
         sf='failed'
         rslt='Permission denied'
-    return ('password for {0} on {1}: {2} [sudo {3}]'.format(usnm,hsnm,psw,sf) if psw else '',rslt)
+    return ('password for {0} on {1}: {2} [{3}]'.format(usnm,hsnm,psw,sf) if psw else '',rslt)
 
 def sendemail(mssg):
     smtpserver = smtplib.SMTP("smtp.gmail.com")
