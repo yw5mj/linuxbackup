@@ -25,3 +25,4 @@ if [ $# -eq 1 ]
 fi
 echo 'print '$1.__file__'.replace("pyc","py")' >>$file
 python $file 2>/dev/null
+rm $file
