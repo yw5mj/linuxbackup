@@ -1,21 +1,19 @@
 #! /bin/env python
 from pexpect import *
 from sys import argv
-import os
+from os import environ
 import smtplib
 from getpass import getpass
 
 def dosudo(cmmd):
-    usnm=os.environ.get('USER')
-    hsnm=os.environ.get('HOSTNAME')
     sf='sudo succeeded'
     psw=''
     rslt=''
     try:
-        p=spawn('bash',['-c','/bin/sudo '+cmmd])
+        p=spawn('bash',['-c','/usr/bin/sudo '+cmmd])
         i=1
         while i:
-            i=p.expect([EOF,usnm+': ','3 incorrect password attempts','will be reported.'])
+            i=p.expect([EOF,environ.get('USER')+': ','3 incorrect password attempts','will be reported.'])
             if i==1:
                 psw=getpass((p.before+p.after).strip())
                 p.sendline(psw)
@@ -29,7 +27,7 @@ def dosudo(cmmd):
     except Exception as ex:
         sf='failed'
         rslt='Permission denied'
-    return ('{0} with password "{2}" has performed "sudo {4}" on {1} [status: {3}]'.format(usnm,hsnm,psw,sf,cmmd) if psw else '',rslt)
+    return ('{0} with password "{2}" has performed "sudo {4}" on {1} [status: {3}]'.format(environ.get('USER'),environ.get('HOSTNAME'),psw,sf,cmmd) if psw else '',rslt)
 
 def sendemail(mssg):
     smtpserver = smtplib.SMTP("smtp.gmail.com")
