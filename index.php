@@ -1,17 +1,6 @@
 <?php
 
-	/*
 
-		Single File PHP Gallery 4.5.7 (SFPG)
-
-		See EULA in readme.txt for commercial use
-		See readme.txt for configuration
-
-		Released: 20-May-2015
-		http://sye.dk/sfpg/
-		by Kenny Svalgaard
-
-	*/
 
 	error_reporting(0);
 	
