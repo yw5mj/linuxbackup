@@ -1,4 +1,5 @@
 #! /bin/bash
+# a script to make my wife cry
 if [ -z "$1" ]
 then 
     echo 'ERROR: no message'
