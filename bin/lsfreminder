@@ -1,0 +1,58 @@
+#! /bin/bash
+runrem(){
+b=$(($(ssh lxplus 'bjobs|wc -l')-1))
+while :
+do
+    a=$(ssh lxplus bjobs)
+    ar=$(echo "$a"|grep RUN|wc -l)
+    ap=$(echo "$a"|grep PEND|wc -l)
+    aa=$(($ar+$ap))
+    date > $1
+    echo $aa 'jobs remaining on LSF' >> $1
+    echo $ar 'jobs running on LSF' >> $1
+    echo $ap 'jobs pending on LSF' >> $1
+    if [ "$aa" == '0' ];then
+	mail -s LSF_information $USER@cern.ch<<EOF
+$b jobs on LSF finished
+EOF
+	rm $1
+	return
+    fi
+    sleep 300
+done
+}
+
+if [ "$1" == '--help' ]||[ "$1" == '-h' ];then
+    echo -e 'lsfreminder: bash script to monitor jobs on LSF lxplus\n'
+    echo 'lsfreminder usage:'
+    echo -e 'lsfreminder [option]\n'
+    echo options:
+    echo -e '--help\t: print usage'
+    echo -e '-h\t: print usage'
+    echo -e '-s\t: print LSF status'
+    echo -e '-k\t: terminate lsfreminder process'
+    exit
+fi
+
+filename="/tmp/LSF_$USER.log"
+
+if [ "$1" == "-s" ]
+then
+    if [ -e "$filename" ]
+    then
+	cat $filename
+    else
+	echo -e "ERROR: No LSF status information\n" >&2
+    fi
+    exit
+fi
+
+if [ "$1" == "-k" ]
+then
+    echo "Ending lsfreminder process"
+    rm $filename &>/dev/null
+    killall lsfreminder
+    exit
+fi
+
+runrem $filename &>/dev/null &
