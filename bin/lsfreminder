@@ -8,9 +8,10 @@ do
     ap=$(echo "$a"|grep PEND|wc -l)
     aa=$(($ar+$ap))
     date > $1
-    echo $aa 'jobs remaining on LSF' >> $1
-    echo $ar 'jobs running on LSF' >> $1
-    echo $ap 'jobs pending on LSF' >> $1
+    echo $b 'jobs submitted on LSF' >> $1
+    echo $aa 'jobs remaining' >> $1
+    echo $ar 'jobs running' >> $1
+    echo $ap 'jobs pending' >> $1
     if [ "$aa" == '0' ];then
 	mail -s LSF_information $USER@cern.ch<<EOF
 $b jobs on LSF finished
